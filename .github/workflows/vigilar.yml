@@ -10,7 +10,7 @@ jobs:
     steps:
       - env:
           TEMA: ${{ secrets.TEMA }}
-          PALABRA: labial
+          PALABRA: calendario
         run: |
           U="https://www.maquillajetrendyshop.com/api/catalog_system/pub/products/search?ft=$PALABRA&_from=0&_to=49"
           A=0; FIN=$((SECONDS+3900))
