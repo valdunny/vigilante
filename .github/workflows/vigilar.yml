@@ -10,17 +10,16 @@ jobs:
     steps:
       - env:
           TEMA: ${{ secrets.TEMA }}
-          PALABRA: calendario
+          PRODUCTO: calendario-de-adviento-2026-wonderland-b
         run: |
-          U="https://www.maquillajetrendyshop.com/api/catalog_system/pub/products/search?ft=$PALABRA&_from=0&_to=49"
-          A=0; FIN=$((SECONDS+3900))
+          U="https://www.maquillajetrendyshop.com/api/catalog_system/pub/products/search/$PRODUCTO/p"
+          FIN=$((SECONDS+3900))
           while [ $SECONDS -lt $FIN ]; do
             R=$(curl -s -A "Mozilla/5.0" "$U")
             P=$(echo "$R" | jq 'length' 2>/dev/null); P=${P:-0}
             Q=$(echo "$R" | jq '[.[].items[].sellers[].commertialOffer.AvailableQuantity] | add // 0' 2>/dev/null); Q=${Q:-0}
-            L=$(echo "$R" | jq -r '.[0].link // ""' 2>/dev/null)
             echo "$(date +%T) productos:$P unidades:$Q"
-            if [ "$P" -gt 0 ] && [ $A -eq 0 ]; then A=1; curl -s -H "Priority: urgent" -H "Click: $L" -d "Aparecio el calendario (aun sin unidades)" "ntfy.sh/$TEMA" >/dev/null; fi
-            if [ "$Q" -gt 0 ]; then curl -s -H "Priority: urgent" -H "Tags: gift" -H "Click: $L" -H "Email: jimenezxd01@gmail.com" -d "YA ESTA DISPONIBLE, corre" "ntfy.sh/$TEMA" >/dev/null; exit 0; fi
+            if [ "$Q" -gt 0 ]; then curl -s -H "Priority: urgent" -H "Tags: gift" -H "Click: https://www.maquillajetrendyshop.com/$PRODUCTO/p" -H "Email: jimenezxd01@gmail.com" -d "YA ESTA DISPONIBLE, corre" "ntfy.sh/$TEMA" >/dev/null; exit 0; fi
             sleep 10
           done
+
